@@ -1,0 +1,3 @@
+set -e
+go generate ./...
+go test ./... -count=1
