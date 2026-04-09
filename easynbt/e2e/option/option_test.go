@@ -5,7 +5,6 @@ import (
 	"errors"
 	"github.com/google/go-cmp/cmp"
 	"github.com/toros100/easynbt/nbt"
-	"github.com/toros100/easynbt/nbt/nbtcmp"
 	"math"
 	"testing"
 )
@@ -173,8 +172,6 @@ func TestAllOptionTypes(t *testing.T) {
 		t.Fail()
 	}
 
-	opt := nbtcmp.NBTOptionTypeCmpOption()
-	_ = opt
 	if !cmp.Equal(a, expected) {
 		t.Fail()
 	}

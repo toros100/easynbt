@@ -11,9 +11,9 @@ import (
 )
 
 var (
+	_ nbt.Unmarshaller = (*Named)(nil)
 	_ nbt.Unmarshaller = (*SomeStruct)(nil)
 	_ nbt.Unmarshaller = (*AllTypesStruct)(nil)
-	_ nbt.Unmarshaller = (*Named)(nil)
 )
 
 func (s *SomeStruct) UnmarshalPayload(data []byte) (int, error) {

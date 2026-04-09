@@ -6,7 +6,7 @@ replace github.com/toros100/easynbt/nbt => ../../nbt
 
 require (
 	github.com/k0kubun/pp/v3 v3.5.1
-	github.com/toros100/easynbt/nbt v0.0.0-00010101000000-000000000000
+	github.com/toros100/easynbt/nbt v0.1.0
 )
 
 require (
