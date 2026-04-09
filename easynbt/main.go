@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"runtime/debug"
 	"strings"
 
 	"github.com/toros100/easynbt/easynbt/generator"
@@ -21,10 +22,26 @@ func main() {
 
 	var dry bool
 	flag.BoolVar(&dry, "dry", false, "Dry run: no output file produced")
-	flag.Parse()
 
 	var verbose bool
 	flag.BoolVar(&verbose, "verbose", false, "Verbose: additional logs, e.g. related to non-fatal errors")
+
+	var version bool
+	flag.BoolVar(&version, "version", false, "Print version and exit")
+
+	flag.Parse()
+
+	if version {
+		info, ok := debug.ReadBuildInfo()
+		if !ok {
+			fmt.Fprintln(os.Stderr, "Failed to read build info")
+			os.Exit(1)
+		}
+
+		fmt.Println("easynbt", info.Main.Version)
+		fmt.Println("built with", info.GoVersion)
+		os.Exit(0)
+	}
 
 	if len(types) == 0 {
 		flag.Usage()

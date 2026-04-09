@@ -8,10 +8,6 @@ require (
 	golang.org/x/tools v0.43.0
 )
 
-replace github.com/toros100/easynbt/nbt => ../nbt/
-
-replace github.com/toros100/easynbt/nbt/nbtcmp => ../nbt/nbtcmp/
-
 require (
 	golang.org/x/mod v0.34.0 // indirect
 	golang.org/x/sync v0.20.0 // indirect
