@@ -11,15 +11,15 @@ import (
 )
 
 var (
-	_ nbt.Unmarshaller = (*ShortPayload)(nil)
-	_ nbt.Unmarshaller = (*IntPayload)(nil)
-	_ nbt.Unmarshaller = (*LongPayload)(nil)
-	_ nbt.Unmarshaller = (*DoublePayload)(nil)
-	_ nbt.Unmarshaller = (*StringPayload)(nil)
-	_ nbt.Unmarshaller = (*ListOfIntPayload)(nil)
 	_ nbt.Unmarshaller = (*BytePayload)(nil)
-	_ nbt.Unmarshaller = (*FloatPayload)(nil)
 	_ nbt.Unmarshaller = (*CompoundPayload)(nil)
+	_ nbt.Unmarshaller = (*DoublePayload)(nil)
+	_ nbt.Unmarshaller = (*FloatPayload)(nil)
+	_ nbt.Unmarshaller = (*IntPayload)(nil)
+	_ nbt.Unmarshaller = (*ListOfIntPayload)(nil)
+	_ nbt.Unmarshaller = (*LongPayload)(nil)
+	_ nbt.Unmarshaller = (*ShortPayload)(nil)
+	_ nbt.Unmarshaller = (*StringPayload)(nil)
 )
 
 func (b *BytePayload) UnmarshalPayload(data []byte) (int, error) {
@@ -36,22 +36,6 @@ func (b *BytePayload) UnmarshalPayload(data []byte) (int, error) {
 
 func (b *BytePayload) TagType() byte {
 	return nbt.TagByte
-}
-
-func (f *FloatPayload) UnmarshalPayload(data []byte) (int, error) {
-	off := 0
-
-	if off+4 > len(data) {
-		return 0, nbt.ErrUnexpectedEOF
-	}
-	nbt.FloatPayloadFromBytes(f, data[off:])
-	off += 4
-
-	return off, nil
-}
-
-func (f *FloatPayload) TagType() byte {
-	return nbt.TagFloat
 }
 
 func (c *CompoundPayload) UnmarshalPayload(data []byte) (int, error) {
@@ -245,54 +229,6 @@ func (c *CompoundPayload) TagType() byte {
 	return nbt.TagCompound
 }
 
-func (s *ShortPayload) UnmarshalPayload(data []byte) (int, error) {
-	off := 0
-
-	if off+2 > len(data) {
-		return 0, nbt.ErrUnexpectedEOF
-	}
-	nbt.ShortPayloadFromBytes(s, data[off:])
-	off += 2
-
-	return off, nil
-}
-
-func (s *ShortPayload) TagType() byte {
-	return nbt.TagShort
-}
-
-func (i *IntPayload) UnmarshalPayload(data []byte) (int, error) {
-	off := 0
-
-	if off+4 > len(data) {
-		return 0, nbt.ErrUnexpectedEOF
-	}
-	nbt.IntPayloadFromBytes(i, data[off:])
-	off += 4
-
-	return off, nil
-}
-
-func (i *IntPayload) TagType() byte {
-	return nbt.TagInt
-}
-
-func (l *LongPayload) UnmarshalPayload(data []byte) (int, error) {
-	off := 0
-
-	if off+8 > len(data) {
-		return 0, nbt.ErrUnexpectedEOF
-	}
-	nbt.LongPayloadFromBytes(l, data[off:])
-	off += 8
-
-	return off, nil
-}
-
-func (l *LongPayload) TagType() byte {
-	return nbt.TagLong
-}
-
 func (d *DoublePayload) UnmarshalPayload(data []byte) (int, error) {
 	off := 0
 
@@ -309,32 +245,36 @@ func (d *DoublePayload) TagType() byte {
 	return nbt.TagDouble
 }
 
-func (s *StringPayload) UnmarshalPayload(data []byte) (int, error) {
+func (f *FloatPayload) UnmarshalPayload(data []byte) (int, error) {
 	off := 0
 
-	if off+2 > len(data) {
+	if off+4 > len(data) {
 		return 0, nbt.ErrUnexpectedEOF
 	}
-
-	strLen := int(binary.BigEndian.Uint16(data[off:]))
-	off += 2
-
-	if off+strLen > len(data) {
-		return 0, nbt.ErrUnexpectedEOF
-	}
-
-	if !utf8.Valid(data[off : off+strLen]) {
-		return 0, nbt.ErrInvalidUTF8
-	}
-
-	nbt.StringFromBytes(s, data[off:off+strLen])
-	off += strLen
+	nbt.FloatPayloadFromBytes(f, data[off:])
+	off += 4
 
 	return off, nil
 }
 
-func (s *StringPayload) TagType() byte {
-	return nbt.TagString
+func (f *FloatPayload) TagType() byte {
+	return nbt.TagFloat
+}
+
+func (i *IntPayload) UnmarshalPayload(data []byte) (int, error) {
+	off := 0
+
+	if off+4 > len(data) {
+		return 0, nbt.ErrUnexpectedEOF
+	}
+	nbt.IntPayloadFromBytes(i, data[off:])
+	off += 4
+
+	return off, nil
+}
+
+func (i *IntPayload) TagType() byte {
+	return nbt.TagInt
 }
 
 func (l *ListOfIntPayload) UnmarshalPayload(data []byte) (int, error) {
@@ -383,4 +323,64 @@ func (l *ListOfIntPayload) UnmarshalPayload(data []byte) (int, error) {
 
 func (l *ListOfIntPayload) TagType() byte {
 	return nbt.TagList
+}
+
+func (l *LongPayload) UnmarshalPayload(data []byte) (int, error) {
+	off := 0
+
+	if off+8 > len(data) {
+		return 0, nbt.ErrUnexpectedEOF
+	}
+	nbt.LongPayloadFromBytes(l, data[off:])
+	off += 8
+
+	return off, nil
+}
+
+func (l *LongPayload) TagType() byte {
+	return nbt.TagLong
+}
+
+func (s *ShortPayload) UnmarshalPayload(data []byte) (int, error) {
+	off := 0
+
+	if off+2 > len(data) {
+		return 0, nbt.ErrUnexpectedEOF
+	}
+	nbt.ShortPayloadFromBytes(s, data[off:])
+	off += 2
+
+	return off, nil
+}
+
+func (s *ShortPayload) TagType() byte {
+	return nbt.TagShort
+}
+
+func (s *StringPayload) UnmarshalPayload(data []byte) (int, error) {
+	off := 0
+
+	if off+2 > len(data) {
+		return 0, nbt.ErrUnexpectedEOF
+	}
+
+	strLen := int(binary.BigEndian.Uint16(data[off:]))
+	off += 2
+
+	if off+strLen > len(data) {
+		return 0, nbt.ErrUnexpectedEOF
+	}
+
+	if !utf8.Valid(data[off : off+strLen]) {
+		return 0, nbt.ErrInvalidUTF8
+	}
+
+	nbt.StringFromBytes(s, data[off:off+strLen])
+	off += strLen
+
+	return off, nil
+}
+
+func (s *StringPayload) TagType() byte {
+	return nbt.TagString
 }

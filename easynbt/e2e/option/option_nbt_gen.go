@@ -11,130 +11,10 @@ import (
 )
 
 var (
+	_ nbt.Unmarshaller = (*AllTypesStruct)(nil)
 	_ nbt.Unmarshaller = (*Named)(nil)
 	_ nbt.Unmarshaller = (*SomeStruct)(nil)
-	_ nbt.Unmarshaller = (*AllTypesStruct)(nil)
 )
-
-func (s *SomeStruct) UnmarshalPayload(data []byte) (int, error) {
-	off := 0
-
-	foundFields0 := [3]bool{}
-
-	for {
-		if off >= len(data) {
-			return 0, nbt.ErrUnexpectedEOF
-		}
-
-		tag0 := data[off]
-		off += 1
-
-		if tag0 == nbt.TagEnd {
-			break
-		}
-
-		if off+2 > len(data) {
-			return 0, nbt.ErrUnexpectedEOF
-		}
-
-		strLen := int(binary.BigEndian.Uint16(data[off:]))
-		off += 2
-
-		if off+strLen > len(data) {
-			return 0, nbt.ErrUnexpectedEOF
-		}
-
-		strData := data[off : off+strLen]
-		off += strLen
-
-		switch string(strData) {
-
-		case "OptionalIntViaType":
-			if foundFields0[0] {
-				return 0, fmt.Errorf("on field OptionalIntViaType: %w", nbt.ErrDuplicateValue)
-			}
-
-			if tag0 != nbt.TagInt {
-				return 0, nbt.ErrUnexpectedTag
-			}
-
-			if off+4 > len(data) {
-				return 0, nbt.ErrUnexpectedEOF
-			}
-			nbt.IntPayloadFromBytes(&s.OptionalIntViaType.Value, data[off:])
-			off += 4
-
-			s.OptionalIntViaType.Ok = true
-			foundFields0[0] = true
-
-		case "OptionalIntViaTag":
-			if foundFields0[1] {
-				return 0, fmt.Errorf("on field OptionalIntViaTag: %w", nbt.ErrDuplicateValue)
-			}
-
-			if tag0 != nbt.TagInt {
-				return 0, nbt.ErrUnexpectedTag
-			}
-
-			if off+4 > len(data) {
-				return 0, nbt.ErrUnexpectedEOF
-			}
-			nbt.IntPayloadFromBytes(&s.OptionalIntViaTag, data[off:])
-			off += 4
-
-			foundFields0[1] = true
-
-		case "SomeString":
-			if foundFields0[2] {
-				return 0, fmt.Errorf("on field SomeString: %w", nbt.ErrDuplicateValue)
-			}
-
-			if tag0 != nbt.TagString {
-				return 0, nbt.ErrUnexpectedTag
-			}
-
-			if off+2 > len(data) {
-				return 0, nbt.ErrUnexpectedEOF
-			}
-
-			strLen := int(binary.BigEndian.Uint16(data[off:]))
-			off += 2
-
-			if off+strLen > len(data) {
-				return 0, nbt.ErrUnexpectedEOF
-			}
-
-			if !utf8.Valid(data[off : off+strLen]) {
-				return 0, nbt.ErrInvalidUTF8
-			}
-
-			nbt.StringFromBytes(&s.SomeString, data[off:off+strLen])
-			off += strLen
-
-			foundFields0[2] = true
-
-		default:
-			k, err := nbt.SkipPayload(tag0, data[off:])
-			if err != nil {
-				return 0, err
-			}
-			off += k
-		}
-	}
-
-	required0 := [3]bool{false, false, true}
-	for i := range foundFields0 {
-		if !foundFields0[i] && required0[i] {
-			return 0, fmt.Errorf("on field %s: %w", [3]string{"OptionalIntViaType", "OptionalIntViaTag", "SomeString"}[i], nbt.ErrMissingValue)
-		}
-	}
-
-	return off, nil
-}
-
-func (s *SomeStruct) TagType() byte {
-	return nbt.TagCompound
-}
 
 func (a *AllTypesStruct) UnmarshalPayload(data []byte) (int, error) {
 	off := 0
@@ -528,4 +408,124 @@ func (n *Named) UnmarshalPayload(data []byte) (int, error) {
 
 func (n *Named) TagType() byte {
 	return nbt.TagShort
+}
+
+func (s *SomeStruct) UnmarshalPayload(data []byte) (int, error) {
+	off := 0
+
+	foundFields0 := [3]bool{}
+
+	for {
+		if off >= len(data) {
+			return 0, nbt.ErrUnexpectedEOF
+		}
+
+		tag0 := data[off]
+		off += 1
+
+		if tag0 == nbt.TagEnd {
+			break
+		}
+
+		if off+2 > len(data) {
+			return 0, nbt.ErrUnexpectedEOF
+		}
+
+		strLen := int(binary.BigEndian.Uint16(data[off:]))
+		off += 2
+
+		if off+strLen > len(data) {
+			return 0, nbt.ErrUnexpectedEOF
+		}
+
+		strData := data[off : off+strLen]
+		off += strLen
+
+		switch string(strData) {
+
+		case "OptionalIntViaType":
+			if foundFields0[0] {
+				return 0, fmt.Errorf("on field OptionalIntViaType: %w", nbt.ErrDuplicateValue)
+			}
+
+			if tag0 != nbt.TagInt {
+				return 0, nbt.ErrUnexpectedTag
+			}
+
+			if off+4 > len(data) {
+				return 0, nbt.ErrUnexpectedEOF
+			}
+			nbt.IntPayloadFromBytes(&s.OptionalIntViaType.Value, data[off:])
+			off += 4
+
+			s.OptionalIntViaType.Ok = true
+			foundFields0[0] = true
+
+		case "OptionalIntViaTag":
+			if foundFields0[1] {
+				return 0, fmt.Errorf("on field OptionalIntViaTag: %w", nbt.ErrDuplicateValue)
+			}
+
+			if tag0 != nbt.TagInt {
+				return 0, nbt.ErrUnexpectedTag
+			}
+
+			if off+4 > len(data) {
+				return 0, nbt.ErrUnexpectedEOF
+			}
+			nbt.IntPayloadFromBytes(&s.OptionalIntViaTag, data[off:])
+			off += 4
+
+			foundFields0[1] = true
+
+		case "SomeString":
+			if foundFields0[2] {
+				return 0, fmt.Errorf("on field SomeString: %w", nbt.ErrDuplicateValue)
+			}
+
+			if tag0 != nbt.TagString {
+				return 0, nbt.ErrUnexpectedTag
+			}
+
+			if off+2 > len(data) {
+				return 0, nbt.ErrUnexpectedEOF
+			}
+
+			strLen := int(binary.BigEndian.Uint16(data[off:]))
+			off += 2
+
+			if off+strLen > len(data) {
+				return 0, nbt.ErrUnexpectedEOF
+			}
+
+			if !utf8.Valid(data[off : off+strLen]) {
+				return 0, nbt.ErrInvalidUTF8
+			}
+
+			nbt.StringFromBytes(&s.SomeString, data[off:off+strLen])
+			off += strLen
+
+			foundFields0[2] = true
+
+		default:
+			k, err := nbt.SkipPayload(tag0, data[off:])
+			if err != nil {
+				return 0, err
+			}
+			off += k
+		}
+	}
+
+	required0 := [3]bool{false, false, true}
+	for i := range foundFields0 {
+		if !foundFields0[i] && required0[i] {
+			return 0, fmt.Errorf("on field %s: %w", [3]string{"OptionalIntViaType", "OptionalIntViaTag", "SomeString"}[i], nbt.ErrMissingValue)
+		}
+	}
+
+	return off, nil
+}
+
+func (s *SomeStruct) TagType() byte {
+	return nbt.TagCompound
 }

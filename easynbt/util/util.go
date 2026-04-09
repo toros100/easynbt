@@ -1,6 +1,7 @@
 package util
 
 import (
+	"cmp"
 	"go/types"
 	"iter"
 	"slices"
@@ -34,6 +35,14 @@ func (t *TypeSet) Contains(typ types.Type) bool {
 
 func (t *TypeSet) Values() iter.Seq[types.Type] {
 	keys := t.m.Keys()
+
+	// sorting to guarantee same order of iteration for same types
+	// to get stable output in codegen for same inputs
+	// maybe a bit hacky?
+	slices.SortFunc(keys, func(a, b types.Type) int {
+		return cmp.Compare(a.String(), b.String())
+	})
+
 	return slices.Values(keys)
 }
 
