@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	_ nbt.Unmarshaller = (*List)(nil)
+	_ nbt.Unmarshaler = (*List)(nil)
 )
 
 func (l *List) UnmarshalPayload(data []byte) (int, error) {

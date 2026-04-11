@@ -11,9 +11,9 @@ import (
 )
 
 var (
-	_ nbt.Unmarshaller = (*AllTypesStruct)(nil)
-	_ nbt.Unmarshaller = (*Named)(nil)
-	_ nbt.Unmarshaller = (*SomeStruct)(nil)
+	_ nbt.Unmarshaler = (*AllTypesStruct)(nil)
+	_ nbt.Unmarshaler = (*Named)(nil)
+	_ nbt.Unmarshaler = (*SomeStruct)(nil)
 )
 
 func (a *AllTypesStruct) UnmarshalPayload(data []byte) (int, error) {
@@ -287,18 +287,16 @@ func (a *AllTypesStruct) UnmarshalPayload(data []byte) (int, error) {
 			if elemTag1 != nbt.TagByte && !(listLen1 == 0 && elemTag1 == nbt.TagEnd) {
 				return 0, nbt.ErrUnexpectedTag
 			}
-			if listLen1 == 0 {
-				continue
-			}
 
 			if a.ListPrimitive.Value == nil {
 				a.ListPrimitive.Value = make([]int8, int(listLen1))
 			} else {
-				a.ListPrimitive.Value = slices.Grow(a.ListPrimitive.Value, int(listLen1))[:int(listLen1)]
+				a.ListPrimitive.Value = slices.Grow(a.ListPrimitive.Value, max(0, int(listLen1)))[:int(listLen1)]
 			}
 			list1 := a.ListPrimitive.Value
 
 			for i1 := range list1 {
+				_ = i1
 
 				if off+1 > len(data) {
 					return 0, nbt.ErrUnexpectedEOF
@@ -337,18 +335,16 @@ func (a *AllTypesStruct) UnmarshalPayload(data []byte) (int, error) {
 			if elemTag1 != (*Named)(nil).TagType() && !(listLen1 == 0 && elemTag1 == nbt.TagEnd) {
 				return 0, nbt.ErrUnexpectedTag
 			}
-			if listLen1 == 0 {
-				continue
-			}
 
 			if a.ListNamed.Value == nil {
 				a.ListNamed.Value = make([]Named, int(listLen1))
 			} else {
-				a.ListNamed.Value = slices.Grow(a.ListNamed.Value, int(listLen1))[:int(listLen1)]
+				a.ListNamed.Value = slices.Grow(a.ListNamed.Value, max(0, int(listLen1)))[:int(listLen1)]
 			}
 			list1 := a.ListNamed.Value
 
 			for i1 := range list1 {
+				_ = i1
 
 				k, err := list1[i1].UnmarshalPayload(data[off:])
 				if err != nil {

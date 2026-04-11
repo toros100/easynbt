@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	_ nbt.Unmarshaller = (*Root)(nil)
+	_ nbt.Unmarshaler = (*Root)(nil)
 )
 
 func (r *Root) UnmarshalPayload(data []byte) (int, error) {

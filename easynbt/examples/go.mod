@@ -4,7 +4,7 @@ go 1.26.1
 
 require (
 	github.com/k0kubun/pp/v3 v3.5.1
-	github.com/toros100/easynbt/nbt v0.1.0
+	github.com/toros100/easynbt/nbt v0.1.1
 )
 
 require (

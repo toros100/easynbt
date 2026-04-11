@@ -37,7 +37,7 @@ func testListHelper(t *testing.T, bs []int8) {
 	s := getListStruct(bs)
 
 	if !cmp.Equal(s, g) {
-		t.Fatal("unmarshalled not equal to expected")
+		t.Fatal("unmarshaled not equal to expected")
 	}
 }
 

@@ -11,15 +11,15 @@ import (
 )
 
 var (
-	_ nbt.Unmarshaller = (*BytePayload)(nil)
-	_ nbt.Unmarshaller = (*CompoundPayload)(nil)
-	_ nbt.Unmarshaller = (*DoublePayload)(nil)
-	_ nbt.Unmarshaller = (*FloatPayload)(nil)
-	_ nbt.Unmarshaller = (*IntPayload)(nil)
-	_ nbt.Unmarshaller = (*ListOfIntPayload)(nil)
-	_ nbt.Unmarshaller = (*LongPayload)(nil)
-	_ nbt.Unmarshaller = (*ShortPayload)(nil)
-	_ nbt.Unmarshaller = (*StringPayload)(nil)
+	_ nbt.Unmarshaler = (*BytePayload)(nil)
+	_ nbt.Unmarshaler = (*CompoundPayload)(nil)
+	_ nbt.Unmarshaler = (*DoublePayload)(nil)
+	_ nbt.Unmarshaler = (*FloatPayload)(nil)
+	_ nbt.Unmarshaler = (*IntPayload)(nil)
+	_ nbt.Unmarshaler = (*ListOfIntPayload)(nil)
+	_ nbt.Unmarshaler = (*LongPayload)(nil)
+	_ nbt.Unmarshaler = (*ShortPayload)(nil)
+	_ nbt.Unmarshaler = (*StringPayload)(nil)
 )
 
 func (b *BytePayload) UnmarshalPayload(data []byte) (int, error) {
@@ -169,18 +169,16 @@ func (c *CompoundPayload) UnmarshalPayload(data []byte) (int, error) {
 					if elemTag2 != nbt.TagByte && !(listLen2 == 0 && elemTag2 == nbt.TagEnd) {
 						return 0, nbt.ErrUnexpectedTag
 					}
-					if listLen2 == 0 {
-						continue
-					}
 
 					if c.InnerCompoundField.ListOfByteField == nil {
 						c.InnerCompoundField.ListOfByteField = make([]int8, int(listLen2))
 					} else {
-						c.InnerCompoundField.ListOfByteField = slices.Grow(c.InnerCompoundField.ListOfByteField, int(listLen2))[:int(listLen2)]
+						c.InnerCompoundField.ListOfByteField = slices.Grow(c.InnerCompoundField.ListOfByteField, max(0, int(listLen2)))[:int(listLen2)]
 					}
 					list2 := c.InnerCompoundField.ListOfByteField
 
 					for i2 := range list2 {
+						_ = i2
 
 						if off+1 > len(data) {
 							return 0, nbt.ErrUnexpectedEOF
@@ -297,18 +295,16 @@ func (l *ListOfIntPayload) UnmarshalPayload(data []byte) (int, error) {
 	if elemTag0 != nbt.TagInt && !(listLen0 == 0 && elemTag0 == nbt.TagEnd) {
 		return 0, nbt.ErrUnexpectedTag
 	}
-	if listLen0 == 0 {
-		return off, nil
-	}
 
 	if *l == nil {
 		*l = make([]int32, int(listLen0))
 	} else {
-		*l = slices.Grow(*l, int(listLen0))[:int(listLen0)]
+		*l = slices.Grow(*l, max(0, int(listLen0)))[:int(listLen0)]
 	}
 	list0 := *l
 
 	for i0 := range list0 {
+		_ = i0
 
 		if off+4 > len(data) {
 			return 0, nbt.ErrUnexpectedEOF

@@ -4,7 +4,7 @@ go 1.26.1
 
 require (
 	github.com/google/go-cmp v0.7.0
-	github.com/toros100/easynbt/nbt v0.1.0
+	github.com/toros100/easynbt/nbt v0.1.1
 	golang.org/x/tools v0.43.0
 )
 

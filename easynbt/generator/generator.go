@@ -20,20 +20,20 @@ import (
 )
 
 const nbtPackagePath = "github.com/toros100/easynbt/nbt"
-const unmarshallerInterfaceName = "Unmarshaller"
+const unmarshalerInterfaceName = "Unmarshaler"
 const optionTypeName = "Option"
 
 const debugAllowBrokenOutput = true
 
 type Generator struct {
-	buf                     *bytes.Buffer
-	nbtPkg                  *packages.Package
-	targetPkg               *packages.Package
-	unmarshallerInterface   *types.Interface
-	unmarshallerMethodNames []string
-	optionType              *types.Named
-	targetTypes             *util.TypeSet
-	opts                    *Options
+	buf                    *bytes.Buffer
+	nbtPkg                 *packages.Package
+	targetPkg              *packages.Package
+	unmarshalerInterface   *types.Interface
+	unmarshalerMethodNames []string
+	optionType             *types.Named
+	targetTypes            *util.TypeSet
+	opts                   *Options
 }
 
 type Options struct {
@@ -96,7 +96,7 @@ func (g *Generator) loadPackage(pattern string) error {
 
 	// essentially excluding the target file from the loaded package
 	// the purpose of this is that we will be checking if a particular named type
-	// already satisfies nbt.Unmarshaller, but for that we need to ignore the intended output file
+	// already satisfies nbt.Unmarshaler, but for that we need to ignore the intended output file
 	// because it will be overwritten
 	overlay[outFileAbs] = fmt.Appendf(nil, "package %s\n", targetPkgName)
 
@@ -146,22 +146,22 @@ func (g *Generator) loadPackage(pattern string) error {
 		panic("internal error: failed to load types from nbt package")
 	}
 
-	res := g.nbtPkg.Types.Scope().Lookup(unmarshallerInterfaceName)
+	res := g.nbtPkg.Types.Scope().Lookup(unmarshalerInterfaceName)
 	if res == nil {
-		panic("internal error: failed to lookup " + unmarshallerInterfaceName)
+		panic("internal error: failed to lookup " + unmarshalerInterfaceName)
 	}
-	if unmarshallerInterface, ok := res.Type().Underlying().(*types.Interface); ok {
-		g.unmarshallerInterface = unmarshallerInterface
+	if unmarshalerInterface, ok := res.Type().Underlying().(*types.Interface); ok {
+		g.unmarshalerInterface = unmarshalerInterface
 	} else {
-		panic("internal error: " + unmarshallerInterfaceName + " is not an interface")
+		panic("internal error: " + unmarshalerInterfaceName + " is not an interface")
 	}
 
-	methodNames := make([]string, 0, g.unmarshallerInterface.NumMethods())
-	for m := range g.unmarshallerInterface.Methods() {
+	methodNames := make([]string, 0, g.unmarshalerInterface.NumMethods())
+	for m := range g.unmarshalerInterface.Methods() {
 		methodNames = append(methodNames, m.Name())
 	}
 
-	g.unmarshallerMethodNames = methodNames
+	g.unmarshalerMethodNames = methodNames
 
 	res = g.nbtPkg.Types.Scope().Lookup(optionTypeName)
 	if res == nil {
@@ -214,12 +214,12 @@ func (g *Generator) checkErrs(pkgPath string, errs []packages.Error) {
 }
 
 func (g *Generator) checkInterfaceMethodsCollision(typ *types.Named) error {
-	if len(g.unmarshallerMethodNames) == 0 {
+	if len(g.unmarshalerMethodNames) == 0 {
 		panic("internal error")
 	}
 
 	for m := range typ.Methods() {
-		if slices.Contains(g.unmarshallerMethodNames, m.Name()) {
+		if slices.Contains(g.unmarshalerMethodNames, m.Name()) {
 			return fmt.Errorf("%w: type %s already has a method %q", ErrMethodCollision, util.TypeString(typ), m.Name())
 		}
 	}
@@ -243,7 +243,6 @@ func (g *Generator) loadTypes(typeNames []string) error {
 	}
 
 	scope := g.targetPkg.Types.Scope()
-	// targetTypes := make([]*types.Named, len(typeNames))
 	g.targetTypes = util.NewTypeSet()
 
 	for _, tn := range typeNames {
@@ -279,7 +278,7 @@ func getReceiverName(typ *types.Named) string {
 	return strings.ToLower(typ.Obj().Name())[:1]
 }
 
-// Generate generates the nbt.Unmarshaller interfaces methods for the specified types, if possible.
+// Generate generates the nbt.Unmarshaler interfaces methods for the specified types, if possible.
 // Invoking the main program via "//go:generate easynbt [...]" in some .go-file
 // sets the working directory to the directory containing that file, thus Generate
 // is usually called with "." as the pattern. (cf. documentation of packages.Load)
@@ -327,8 +326,8 @@ func (g *Generator) Generate(opts *Options, packagePattern string, typeNames []s
 		}
 
 		// essentially assertions to ensure the code fails to build if the types dont implement the
-		// nbt.Unmarshaller interface as promised
-		fmt.Fprintf(g.buf, "_ nbt.Unmarshaller = (*%s)(nil)\n", named.Obj().Name())
+		// nbt.Unmarshaler interface as promised
+		fmt.Fprintf(g.buf, "_ nbt.Unmarshaler = (*%s)(nil)\n", named.Obj().Name())
 	}
 
 	fmt.Fprintf(g.buf, ")\n")
@@ -433,8 +432,8 @@ func (g *Generator) isTargetType(t types.Type) bool {
 	return g.targetTypes.Contains(t)
 }
 
-func (g *Generator) implementsUnmarshaller(t *types.Pointer) bool {
-	return types.Implements(t, g.unmarshallerInterface)
+func (g *Generator) implementsUnmarshaler(t *types.Pointer) bool {
+	return types.Implements(t, g.unmarshalerInterface)
 }
 
 func (g *Generator) writeUnmarshal(into string, typ types.Type, level uint) error {
@@ -466,7 +465,7 @@ func (g *Generator) writeUnmarshalBasic(into string, typ *types.Basic, level uin
 	// helper methods in nbt package like
 	// nbt.BytePayloadFromBytes take a pointer argument due to restrictions on
 	// acceptable input types, into is already a pointer if and only if this
-	// is writing the unmarshaller for a named type like "type MyByte int8"
+	// is writing the unmarshaler for a named type like "type MyByte int8"
 
 	var intoExpr string
 	if level == 0 {
@@ -803,11 +802,11 @@ func (g *Generator) writeUnmarshalNamed(into string, t *types.Named, level uint)
 		return nil
 	}
 
-	if !g.isTargetType(t) && !g.implementsUnmarshaller(types.NewPointer(t)) {
+	if !g.isTargetType(t) && !g.implementsUnmarshaler(types.NewPointer(t)) {
 		// todo: maybe add a flag --force or similar to allow this error to be ignored and just generate
 		// the code calling interface methods. i could imagine that sometimes you might want to do that in dev,
 		// even though it produces code that wont even compile
-		return fmt.Errorf("%w (does not implement nbt.Unmarshaller)", ErrUnexpectedType)
+		return fmt.Errorf("%w (does not implement nbt.Unmarshaler)", ErrUnexpectedType)
 	}
 
 	fmt.Fprintf(g.buf, `
@@ -822,7 +821,7 @@ func (g *Generator) writeUnmarshalNamed(into string, t *types.Named, level uint)
 
 func (g *Generator) writeUnmarshalPointer(into string, typ *types.Pointer) error {
 	// the only allowed pointer types are pointers to named types that are either
-	// targets of the current codegen, or already implement nbt.Unmarshaller
+	// targets of the current codegen, or already implement nbt.Unmarshaler
 
 	named, ok := types.Unalias(typ.Elem()).(*types.Named)
 	if !ok {
@@ -834,8 +833,8 @@ func (g *Generator) writeUnmarshalPointer(into string, typ *types.Pointer) error
 		return fmt.Errorf("%w (pointer to nbt.Option)", ErrUnexpectedType)
 	}
 
-	if !g.isTargetType(named) && !g.implementsUnmarshaller(typ) {
-		return fmt.Errorf("%w (%s does not implement nbt.Unmarshaller)", ErrUnexpectedType, util.TypeString(typ))
+	if !g.isTargetType(named) && !g.implementsUnmarshaler(typ) {
+		return fmt.Errorf("%w (%s does not implement nbt.Unmarshaler)", ErrUnexpectedType, util.TypeString(typ))
 	}
 
 	fmt.Fprintf(g.buf, `
@@ -886,13 +885,6 @@ func (g *Generator) writeUnmarshalSlice(into string, t *types.Slice, level uint)
 		}
 		`, listLenVar, listLenVar)
 
-	var escape string
-	if level == 0 {
-		escape = "return off, nil"
-	} else {
-		escape = "continue"
-	}
-
 	tagExpr, err := g.getExpectedTagExpression(elemTyp)
 
 	if err != nil {
@@ -907,18 +899,27 @@ func (g *Generator) writeUnmarshalSlice(into string, t *types.Slice, level uint)
 		if %s != %s && !(%s == 0 && %s == nbt.TagEnd) {
 			return 0, nbt.ErrUnexpectedTag
 		}
-		if %s == 0 {
-			%s
-		}
-		`, elemTagVar, tagExpr, listLenVar, elemTagVar, listLenVar, escape)
+		`, elemTagVar, tagExpr, listLenVar, elemTagVar)
 
-	// pain and suffering
+	// doing the slightly odd thing of growing the slice if one already exists
+	// to reuse memory instead of unconditionally allocating a brand new slice,
+	// i want to work on tools for making the codegen target types reusable in general
+	// (e.g. when processing chunk data, you would end up unmarshalling the same shape of data many times,
+	// there is no reason to throw all that good memory away every time if you could just reuse the entire struct).
+	// other things to consider would be that at the very least the Ok fields on all occuring Options must be
+	// set to false again to make a type ready for another round of unmarshalling
+
+	// maybe there could be some kind of Resetter interface, that user types could optionally provide
+	// and then the tool also generates a Reset method that resets each internal field as appropriate
+	// (manually deal with options, call Reset method on any type that provides it)
+	// maybe it would be nice to encapsulate the entire "allocation" behaviour into a helper method
+	// that could be customized, for example to pool slices
 
 	fmt.Fprintf(g.buf, `
 		if %s == nil {
 			%s = make(%s, int(%s))
 		} else {
-			%s = slices.Grow(%s, int(%s))[:int(%s)]
+			%s = slices.Grow(%s, max(0, int(%s)))[:int(%s)]
 		}
 		%s := %s
 		`,
@@ -934,9 +935,12 @@ func (g *Generator) writeUnmarshalSlice(into string, t *types.Slice, level uint)
 		intoExpr,
 	)
 
+	// the blank assignment is done because the index variable can be unused (build error)
+	// in some edge cases (that are otherwise meaningful)
 	fmt.Fprintf(g.buf, `
 		for %s := range %s {
-		`, idxVar, listVar)
+			_ = %s
+		`, idxVar, listVar, idxVar)
 
 	nextInto := fmt.Sprintf("%s[%s]", listVar, idxVar)
 
@@ -989,8 +993,8 @@ func (g *Generator) getExpectedTagExpression(typ types.Type) (string, error) {
 		}
 
 		p := types.NewPointer(t)
-		if !g.isTargetType(t) && !g.implementsUnmarshaller(p) {
-			return "", fmt.Errorf("%w (%s does not implement nbt.Unmarshaller)", ErrUnexpectedType, util.TypeString(p))
+		if !g.isTargetType(t) && !g.implementsUnmarshaler(p) {
+			return "", fmt.Errorf("%w (%s does not implement nbt.Unmarshaler)", ErrUnexpectedType, util.TypeString(p))
 		}
 
 		return fmt.Sprintf("(*%s)(nil).TagType()", g.typeStringRelative(typ)), nil
@@ -1002,8 +1006,8 @@ func (g *Generator) getExpectedTagExpression(typ types.Type) (string, error) {
 			if _, ok := g.isOptionOf(named); ok {
 				return "", fmt.Errorf("%w (pointer to nbt.Option)", ErrUnexpectedType)
 			}
-			if !g.isTargetType(named) && !g.implementsUnmarshaller(t) {
-				return "", fmt.Errorf("%w (%s does not implement nbt.Unmarshaller)", ErrUnexpectedType, util.TypeString(t))
+			if !g.isTargetType(named) && !g.implementsUnmarshaler(t) {
+				return "", fmt.Errorf("%w (%s does not implement nbt.Unmarshaler)", ErrUnexpectedType, util.TypeString(t))
 			}
 		}
 		return fmt.Sprintf("(%s)(nil).TagType()", g.typeStringRelative(typ)), nil

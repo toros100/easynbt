@@ -14,7 +14,7 @@ var SomeVar = 1
 type SneakyNonLocalAlias = otherpackage.SomeType
 
 type UnderlyingOfExternalOk otherpackage.SomeType
-type UnderlyingOfExternalMarshaller otherpackage.IsMarshaller
+type UnderlyingOfExternalMarshaler otherpackage.IsMarshaler
 
 type UnderlyingOfOption nbt.Option[string]
 
@@ -75,7 +75,7 @@ type StructBadPointer struct {
 	Field *int32
 }
 
-type StructFieldNotUnmarshaller struct {
+type StructFieldNotUnmarshaler struct {
 	Field FieldType
 }
 
@@ -93,19 +93,19 @@ func (a AlreadyHasUnmarshalPayload) UnmarshalPayload(args, do, not, matter strin
 
 type HasTagTypeButOnlyInTargetFile int8
 
-type IsMarshaller struct{}
+type IsMarshaler struct{}
 
-func (i *IsMarshaller) TagType() byte {
+func (i *IsMarshaler) TagType() byte {
 	return 0
 }
-func (i *IsMarshaller) UnmarshalPayload(data []byte) (int, error) {
+func (i *IsMarshaler) UnmarshalPayload(data []byte) (int, error) {
 	return 0, nil
 }
 
 type TargetType int8
 type PrimitiveAlias = int8
 type TargetAlias = TargetType
-type MarshallerAlias = IsMarshaller
+type MarshalerAlias = IsMarshaler
 type OptionAlias = nbt.Option[int8]
 type ListAlias = []int8
 type CompoundAlias = struct {
@@ -121,7 +121,7 @@ type EverythingStruct struct {
 	NonUTF8ButIgnored    int8         `nbt:"\xff" nbtignore:""`
 	PrimitiveAlias       PrimitiveAlias
 	TargetAlias          TargetAlias
-	MarshallerAlias      MarshallerAlias
+	MarshalerAlias       MarshalerAlias
 	OptionAlias          OptionAlias
 	ListAlias            ListAlias
 	CompoundAlias        CompoundAlias
@@ -133,13 +133,13 @@ type EverythingStruct struct {
 	Double               float64
 	String               string
 	Compound             struct{ X int8 }
-	Named                IsMarshaller
-	PointerNamed         *IsMarshaller
-	NamedExternal        otherpackage.IsMarshaller
-	PointerNamedExternal *otherpackage.IsMarshaller
+	Named                IsMarshaler
+	PointerNamed         *IsMarshaler
+	NamedExternal        otherpackage.IsMarshaler
+	PointerNamedExternal *otherpackage.IsMarshaler
 	ListPrimitive        []int8
-	ListNamed            []IsMarshaller
-	ListPointer          []*IsMarshaller
+	ListNamed            []IsMarshaler
+	ListPointer          []*IsMarshaler
 	ListList             [][]int8
 	ListNamedTarget      []TargetType
 	ListPointerTarget    []*TargetType
@@ -152,8 +152,8 @@ type EverythingStruct struct {
 	OptionDouble         nbt.Option[float64]
 	OptionString         nbt.Option[string]
 	OptionList           nbt.Option[[]int8]
-	OptionNamed          nbt.Option[IsMarshaller]
-	OptionPointer        nbt.Option[*IsMarshaller]
+	OptionNamed          nbt.Option[IsMarshaler]
+	OptionPointer        nbt.Option[*IsMarshaler]
 	OptionTarget         nbt.Option[TargetType]
 	OptionPointerTarget  nbt.Option[*TargetType]
 	OptionCompound       nbt.Option[struct{ X int8 }]

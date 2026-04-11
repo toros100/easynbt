@@ -17,7 +17,7 @@ func TestNonUTF8(t *testing.T) {
 func TestSneaky(t *testing.T) {
 	helper(t, ErrUnexpectedType, "SneakyNonLocalAlias")
 	helper(t, nil, "UnderlyingOfExternalOk")
-	helper(t, ErrUnexpectedType, "UnderlyingOfExternalMarshaller")
+	helper(t, ErrUnexpectedType, "UnderlyingOfExternalMarshaler")
 	helper(t, ErrUnexpectedType, "UnderlyingOfOption")
 }
 
@@ -55,8 +55,8 @@ func TestAllowedTypes(t *testing.T) {
 	helper(t, ErrUnexpectedType, "StructEmbeddedField")
 	helper(t, ErrUnexpectedType, "StructEmbeddedFieldInner")
 	helper(t, nil, "StructEmpty")
-	helper(t, ErrUnexpectedType, "StructFieldNotUnmarshaller")
-	helper(t, nil, "StructFieldNotUnmarshaller", "FieldType")
+	helper(t, ErrUnexpectedType, "StructFieldNotUnmarshaler")
+	helper(t, nil, "StructFieldNotUnmarshaler", "FieldType")
 	helper(t, nil, "IgnoredBadTypeField")
 	helper(t, nil, "EverythingStruct", "TargetType")
 }

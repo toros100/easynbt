@@ -15,7 +15,7 @@ func main() {
 	// add optional target package(s) pattern and build flags args
 
 	var types string
-	flag.StringVar(&types, "types", "", "Comma-separated list of target types to generate unmarshalling code for")
+	flag.StringVar(&types, "types", "", "Comma-separated list of target types to generate unmarshaling code for")
 
 	var out string
 	flag.StringVar(&out, "out", "", "Output file path: optional, default is {package name}_nbt_gen.go in the working directory")

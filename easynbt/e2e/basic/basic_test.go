@@ -10,7 +10,7 @@ import (
 
 // TODO: tests for remaining types
 
-func expectTagType(t *testing.T, u nbt.Unmarshaller, tagType byte) {
+func expectTagType(t *testing.T, u nbt.Unmarshaler, tagType byte) {
 	t.Helper()
 
 	if tt := u.TagType(); tt != tagType {

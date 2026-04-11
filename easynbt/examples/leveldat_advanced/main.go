@@ -26,7 +26,7 @@ type Root struct {
 }
 
 // a named type can be defined to "extract" a nested struct type
-// caution: in this case, the type does need to implement nbt.Unmarshaller,
+// caution: in this case, the type does need to implement nbt.Unmarshaler,
 // which we accomplished by adding it to the target types of easynbt
 type Version struct {
 	Id       int32
@@ -42,13 +42,13 @@ type DifficultySettings = struct {
 	Locked     Bool   `nbt:"locked"`
 }
 
-// a timestamp type with custom nbt.Unmarshaller implementation that represents a long payload as a string
+// a timestamp type with custom nbt.Unmarshaler implementation that represents a long payload as a string
 type Timestamp string
 
 func (t *Timestamp) TagType() byte {
 	// needs to return nbt.TagLong, because the corresponding nbt data is still a long payload
 	// note that the underlying type of Timestamp is "string", which would correspond with
-	// nbt.TagString, if Timestamp were a code generation target. but when writing a custom Unmarshaller,
+	// nbt.TagString, if Timestamp were a code generation target. but when writing a custom Unmarshaler,
 	// the underlying type does not need to "match" the value returned by TagType
 	return nbt.TagLong
 }
@@ -64,7 +64,7 @@ func (t *Timestamp) UnmarshalPayload(data []byte) (int, error) {
 
 // alternatively:
 // type Timestamp2 int64
-// use easynbt to generate nbt.Unmarshaller methods for this type
+// use easynbt to generate nbt.Unmarshaler methods for this type
 // implement a .Format() or .String() method, e.g:
 // func (t *Timestamp2) Format(layout string) string {
 // 		return time.UnixMilli(int64(*t)).Format(layout)
