@@ -4,14 +4,14 @@ Code generation tool for fast unmarshaling of the minecraft (java edition) [NBT 
 
 # Modules
 
-* [easynbt](https://github.com/toros100/easynbt/easynbt): The code generation tool.
-* [nbt](https://github.com/toros100/easynbt/nbt): Provides a value-based Option type, as well as definitions and helper functions used by the generated code. No external dependencies to make vendoring as easy as possible.
-* [nbt/nbtcmp](https://github.com/toros100/easynbt/nbt/nbtcmp): cmp.Option for use with the nbt.Option type and [github.com/google/go-cmp/cmp](https://github.com/google/go-cmp/cmp) ([only in tests](https://github.com/google/go-cmp/issues/373))
+* [easynbt](https://github.com/toros100/easynbt/tree/main/easynbt): The code generation tool.
+* [nbt](https://github.com/toros100/easynbt/tree/main/nbt): Provides a value-based Option type, as well as definitions and helper functions used by the generated code. No external dependencies to make vendoring as easy as possible.
+* [nbt/nbtcmp](https://github.com/toros100/easynbt/tree/main/nbt/nbtcmp): cmp.Option for use with the nbt.Option type and [github.com/google/go-cmp](https://github.com/google/go-cmp) ([only in tests](https://github.com/google/go-cmp/issues/373))
 
 # Overview
 Taking inspiration from [easyjson](https://github.com/mailru/easyjson), easynbt lets you define Go types matching the structure of NBT data and automatically generate NBT unmarshaling code. Ideally, this code should be faster than a general, reflection-based implementation, while still being simple and readable enough to modify and optimize by hand.
 
-Using easynbt might look like this (cf. [easynbt/examples/readme_example/](https://github.com/toros100/easynbt/easynbt/examples/readme_example)):
+Using easynbt might look like this (cf. [easynbt/examples/readme_example/](https://github.com/toros100/easynbt/tree/main/easynbt/examples/readme_example)):
 
 ```go
 //go:generate easynbt -types=Data
