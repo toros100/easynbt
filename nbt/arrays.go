@@ -9,9 +9,9 @@ import (
 )
 
 var (
-	_ Unmarshaller = (*ByteArray)(nil)
-	_ Unmarshaller = (*IntArray)(nil)
-	_ Unmarshaller = (*LongArray)(nil)
+	_ Unmarshaler = (*ByteArray)(nil)
+	_ Unmarshaler = (*IntArray)(nil)
+	_ Unmarshaler = (*LongArray)(nil)
 )
 
 type ByteArray struct {

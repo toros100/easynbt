@@ -8,7 +8,7 @@ import (
 type optionIdentity struct{}
 
 type Option[T any] struct {
-	// The blank field with an arbitrary (but unique) unexported type serves as a marker an
+	// The blank field with an arbitrary (but unique) unexported type serves as a marker and
 	// allows the Option type to be "recognized", even when inspecting the instantiated
 	// underlying struct type (without type name information)
 	_     optionIdentity

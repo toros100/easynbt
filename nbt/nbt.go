@@ -30,7 +30,7 @@ func isValidTag(tag byte) bool {
 	return tag <= 12
 }
 
-type Unmarshaller interface {
+type Unmarshaler interface {
 	// TagType is expected to return the same byte value in {0, ..., 12} across calls
 	// on the same implementing type, otherwise the behaviour of the generated code is undefined.
 	// Further, TagType must be callable safely on a nil receiver.
@@ -47,7 +47,7 @@ type Unmarshaller interface {
 // Unmarshal is usually used on a type representing the outermost/root compound tag.
 // If err == nil, then name is the name of the root tag (often empty) and n the number of bytes
 // consumed.
-func Unmarshal[T Unmarshaller](t T, data []byte) (name string, n int, err error) {
+func Unmarshal[T Unmarshaler](t T, data []byte) (name string, n int, err error) {
 	if len(data) == 0 {
 		return "", 0, ErrUnexpectedEOF
 	}
@@ -100,7 +100,7 @@ func skipString(data []byte) (n int, err error) {
 
 // SkipPayload is used by generated code to skip an unneeded NBT payload.
 // More precisely, payloads of tags with names that did not match any
-// expected name in a compound tag that is being unmarshalled.
+// expected name in a compound tag that is being unmarshaled.
 func SkipPayload(tag byte, data []byte) (n int, err error) {
 	if !isValidTag(tag) || tag == TagEnd {
 		return 0, ErrUnexpectedTag
