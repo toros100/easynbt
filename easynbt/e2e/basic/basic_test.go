@@ -28,9 +28,6 @@ func TestTagType(t *testing.T) {
 	expectTagType(t, (*ListOfIntPayload)(nil), nbt.TagList)
 	expectTagType(t, (*CompoundPayload)(nil), nbt.TagCompound)
 	expectTagType(t, (*StringPayload)(nil), nbt.TagString)
-	expectTagType(t, (*nbt.ByteArray)(nil), nbt.TagByteArray)
-	expectTagType(t, (*nbt.IntArray)(nil), nbt.TagIntArray)
-	expectTagType(t, (*nbt.LongArray)(nil), nbt.TagLongArray)
 }
 
 func TestUnmarshalByte(t *testing.T) {
@@ -79,51 +76,6 @@ func TestUnmarshalList(t *testing.T) {
 	expectErr(t, err, nil)
 	expectEq(t, k, len(data), "bytes read")
 	expectEq(t, *p, []int32{0, 256, -1}, "v")
-}
-
-func TestUnmarshalByteArray(t *testing.T) {
-	data := []byte{0, 0, 0, 8, 0, 1, 2, 3, 4, 5, 6, 7}
-
-	p := new(nbt.ByteArray)
-
-	k, err := p.UnmarshalPayload(data)
-
-	expectErr(t, err, nil)
-	expectEq(t, k, len(data), "bytes read")
-
-	expected := new(nbt.ByteArray).FromSlice([]int8{0, 1, 2, 3, 4, 5, 6, 7})
-
-	expectEq(t, p, expected, "array data")
-}
-
-func TestUnmarshalIntArray(t *testing.T) {
-	data := []byte{0, 0, 0, 2, 0, 1, 2, 3, 4, 5, 6, 7}
-
-	p := new(nbt.IntArray)
-
-	k, err := p.UnmarshalPayload(data)
-
-	expectErr(t, err, nil)
-	expectEq(t, k, len(data), "bytes read")
-
-	expected := new(nbt.IntArray).FromSlice([]int32{66051, 67438087})
-
-	expectEq(t, p, expected, "array data")
-}
-
-func TestUnmarshalLongArray(t *testing.T) {
-	data := []byte{0, 0, 0, 2, 0, 1, 2, 3, 4, 5, 6, 7, 0, 0, 0, 0, 0, 0, 0, 1}
-
-	p := new(nbt.LongArray)
-
-	k, err := p.UnmarshalPayload(data)
-
-	expectErr(t, err, nil)
-	expectEq(t, k, len(data), "bytes read")
-
-	expected := new(nbt.LongArray).FromSlice([]int64{283686952306183, 1})
-
-	expectEq(t, p, expected, "array data")
 }
 
 func expectEq[T any](t *testing.T, x, y T, message string) {

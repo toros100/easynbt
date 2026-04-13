@@ -4,12 +4,12 @@ go 1.26.1
 
 require (
 	github.com/k0kubun/pp/v3 v3.5.1
-	github.com/toros100/easynbt/nbt v0.1.1
+	github.com/toros100/easynbt/nbt v0.1.2
 )
 
 require (
 	github.com/mattn/go-colorable v0.1.14 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
-	golang.org/x/sys v0.29.0 // indirect
+	golang.org/x/sys v0.42.0 // indirect
 	golang.org/x/text v0.32.0 // indirect
 )

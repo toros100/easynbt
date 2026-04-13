@@ -6,7 +6,7 @@ import (
 )
 
 // TODO: i do not like this test setup
-// there has to be a better way than "hiding" stuff in a testdata directory 
+// there has to be a better way than "hiding" stuff (as in: test packages) in an internal package
 // (which i am doing to make the test package(s) not importable)
 // (also, this takes annoyingly long to run)
 

@@ -4,7 +4,7 @@ Code generation tool for fast unmarshaling of the minecraft (java edition) [NBT 
 
 # Modules
 
-* [easynbt](https://github.com/toros100/easynbt/tree/main/easynbt): The code generation tool.
+* [easynbt](https://github.com/toros100/easynbt/tree/main/easynbt): The code generation tool. Requires `github.com/toros100/easynbt/nbt` to be included in the local `go.mod`.
 * [nbt](https://github.com/toros100/easynbt/tree/main/nbt): Provides a value-based Option type, as well as definitions and helper functions used by the generated code. No external dependencies to make vendoring as easy as possible.
 * [nbt/nbtcmp](https://github.com/toros100/easynbt/tree/main/nbt/nbtcmp): cmp.Option for use with the nbt.Option type and [github.com/google/go-cmp](https://github.com/google/go-cmp) ([only in tests](https://github.com/google/go-cmp/issues/373))
 
@@ -56,7 +56,7 @@ For `nbtignore` and `nbtoptional`, the presence of the key is taken as a boolean
 When unmarshaling a compound payload into a struct, child tags with names that do not match any expected child tags name are ignored.
 
 To be able to distinguish absent optional values from zero values, the package `nbt` provides the type `nbt.Option[T any]`, which may be used in struct fields and implicitly marks the field as optional. The tag type for `nbt.Option[T]` with a particular `T` is determined by `T`.
-Further, the package `nbt` provides types implementing `nbt.Unmarshaler` that may be used to represent byte/int/long array tags. Because array tags are unable to be nested and are the most likely to require custom implementations (e.g. for bit unpacking in chunk data), easynbt uses Go slice types solely for list tags and there is no way to for example unmarshal a long array tag into directly into `[]int64`.
+Further, the package `nbt` provides types implementing `nbt.Unmarshaler` that may be used to represent byte/int/long array tags. Because array tags are unable to be nested and are the most likely to require custom implementations (e.g. for bit unpacking in chunk data), easynbt uses Go slice types solely for list tags and there is no way to for example unmarshal a long array tag directly into `[]int64`.
 
 
 [^1]: The naming is a bit unfortunate, but in NBT data, so-called byte payloads are interpreted as signed 8 bit integers, thus the Go type `byte` would be inappropriate.
